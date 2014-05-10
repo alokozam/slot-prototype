@@ -1,0 +1,39 @@
+/*
+-----------Layout
+*/
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+/*
+----------GameUIManager
+*/
+
+#loading-overlay{
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	top:0;
+	left: 0;
+	background: url(../img/LOADING.GIF) no-repeat 50% 50% rgba(255,255,255, 0.3);
+	z-index: 20;
+}
+
+
+
+
+
+
+#slot-game{
+	height: 100%;
+	max-height: 536px;
+	max-width: 960px;
+	position: relative;
+	top:50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+
+	background: rgb(240,240,240);
+}
