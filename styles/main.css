@@ -17,8 +17,13 @@ html, body {
 	position: fixed;
 	top:0;
 	left: 0;
-	background: url(../img/LOADING.GIF) no-repeat 50% 50% rgba(255,255,255, 0.3);
+	background: url(../img/LOADING.GIF) no-repeat 50% 50% rgba(255,255,255, 0.7);
 	z-index: 20;
+	display: none;
+}
+
+#loading-overlay.visible{
+	display: block;
 }
 
 
@@ -34,6 +39,27 @@ html, body {
 	top:50%;
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 
 	background: rgb(240,240,240);
+}
+
+#spin-wrap{
+	height: 465px;
+	width: 235px;
+	position: absolute;
+	top:50%;
+	left:50px;
+	-webkit-transform: translate(0%, -50%);
+	transform: translate(0%, -50%);
+	border:1px solid red;
+}
+
+#spin-buffer{
+	display: none;
+}
+
+#slot-spin{
+	width: 235px;
+	height: 465px;
 }
