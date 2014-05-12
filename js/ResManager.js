@@ -1,32 +1,31 @@
 (function(){
 
 	/*
-	This component is responsible for resources loading, and UI components enabling/disabling
+	This component is responsible for resources loading
 	@constructor
-
-	@param {function} onUIReady - handler that will execute after all resources be loaded
 	*/
-	var GameUIManager = function(params){
+	var ResManager = function(params){
+		if(!params){
+			throw('GameUIManager reqire mandatory params')
+		}
 
 		this.loadingVisibleClass = 'visible';
 		this.resourcesUrl = 'data/resources.json';
 
 		this.canvasBuffer = document.getElementById('spin-buffer');
 
-		//this.resources = []; //empty array for resources
-
-		//this.preloadImages(this.imagesList);
+		this.resources = params.resources; //save link on res models
+		this.UIReadyPool = [];
 
 		this.prepareGame();
-
 	}
 
-	GameUIManager.prototype.prepareGame = function(){
+	ResManager.prototype.prepareGame = function(){
 		this.setLoadingIndication(true);
 		this.getResourcesList();
 	}
 
-	GameUIManager.prototype.bufferizeResources = function(resourcesList){
+	ResManager.prototype.bufferizeResources = function(resourcesList){
 
 		var resourcesAmount = resourcesList.length,
 			resourcesCounter = 0, //used for primitive deferred pattern realization
@@ -34,14 +33,11 @@
 			checkState = function(){
 				if (resourcesAmount == resourcesCounter){ //all resources loaded
 					this.setLoadingIndication(false);
-					//TODO call handler, after loading
 
-					var canv2 = document.getElementById('slot-spin'),
-						ctx2 = canv2.getContext('2d'),
-						y = 300;
+					this.UIReadyPool.forEach(function(handlerItem){
+						handlerItem();
+					})
 
-					ctx2.drawImage(this.canvasBuffer, 0, y);
-					ctx2.drawImage(this.canvasBuffer, 0, y-155*6);
 				}
 			}; 
 
@@ -58,7 +54,7 @@
 		}).bind(this) );
 	}
 
-	GameUIManager.prototype.addToBuffer = function(imgData, index){
+	ResManager.prototype.addToBuffer = function(imgData, index){
 		var canvas = this.canvasBuffer,
 			ctx = canvas.getContext('2d');
 
@@ -68,8 +64,9 @@
 	/*
 	Gets list of resources to preload
 	*/
-	GameUIManager.prototype.getResourcesList = function(){
+	ResManager.prototype.getResourcesList = function(){
 		GameUtils.ajax('data/resources.json', (function(response){
+			this.resources.set(response) ;
 			this.bufferizeResources(response);
 		}).bind(this) );
 	}
@@ -77,7 +74,7 @@
 	/*
 	@param {boolean} state
 	*/
-	GameUIManager.prototype.setLoadingIndication = function(state){
+	ResManager.prototype.setLoadingIndication = function(state){
 		var loadingOverlay = document.getElementById('loading-overlay'),
 			isLoadingOvarlayVisible = !(loadingOverlay.className.indexOf(this.loadingVisibleClass)<0);
 
@@ -89,6 +86,10 @@
 
 	}
 
-	new GameUIManager({});
+	ResManager.prototype.onUIReady = function(handler){
+		this.UIReadyPool.push(handler);
+	}
+
+	window.ResManager = ResManager;
 
 })(window)
